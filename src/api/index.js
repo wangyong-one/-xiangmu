@@ -1,7 +1,9 @@
 import { get } from './helpers'
 
-const getSellser = get('/api/seller')
+const getSeller = get('/api/seller')
+const getGoods = get('/api/goods')
 
 export {
-    getSellser
+    getSeller,
+    getGoods
 }
