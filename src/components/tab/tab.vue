@@ -21,7 +21,7 @@
       @change="onChange"
     >
       <cube-slide-item v-for="(tab, index) in tabs" :key="index">
-        <component :is="tab.component" :data="tab.data"></component>
+        <component :is="tab.component" :data="tab.data" ref="component"></component>
       </cube-slide-item>
     </cube-slide>
     </div>
@@ -35,7 +35,7 @@
       tabs: {
         type: Array,
         default() {
-          return {}
+          return []
         }
       },
       // 默认可以选择一个下标 不写死为默认下标0
@@ -67,6 +67,9 @@
         }
       }
     },
+    mounted() {
+      this.onChange(this.index)
+    },
     methods: {
       onScroll(pos) {
         const tabBarWidth = this.$refs.tabBar.$el.clientWidth
@@ -77,12 +80,10 @@
       onChange(current) {
         this.index = current
         const instance = this.$refs.component[current]
-        if (instance && instance.fetch) {
-          instance.fetch()
+        instance.fetch && instance.fetch()
         }
       }
     }
-  }
 </script>
 
 <style lang="stylus" scoped>

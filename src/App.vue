@@ -3,7 +3,7 @@
      <v-header :seller="seller"></v-header>
      <div class="tab-wrapper">
        <!-- 这里initialIndex 做一个扩展进行修改默认展示页面 -->
-       <tab :tabs="tabs" :initialIndex=0></tab>
+       <tab :tabs="tabs"></tab>
      </div>
   </div>
 </template>
@@ -63,4 +63,11 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+#app
+    .tab-wrapper
+      position: fixed
+      top: 136px
+      left: 0
+      right: 0
+      bottom: 0
 </style>
