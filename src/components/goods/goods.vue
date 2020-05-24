@@ -45,9 +45,8 @@
     <div class="shop-cart-wrapper">
       <shop-cart
         ref="shopCart"
-        :select-foods="selectFoods"
-        :delivery-price="seller.deliveryPrice"
-        :min-price="seller.minPrice"></shop-cart>
+        >
+        </shop-cart>
     </div>
   </div>
 </template>
@@ -103,8 +102,25 @@
     components: {
       CartControl,
       ShopCart
+    },
+      onAdd(target) {
+        this.$refs.shopCart.drop(target)
+      },
+      _showShopCartSticky() {
+        this.shopCartStickyComp = this.shopCartStickyComp || this.$createShopCartSticky({
+          $props: {
+            selectFoods: 'selectFoods',
+            deliveryPrice: this.seller.deliveryPrice,
+            minPrice: this.seller.minPrice,
+            fold: true
+          }
+        })
+        this.shopCartStickyComp.show()
+      },
+      _hideShopCartSticky() {
+        this.shopCartStickyComp.hide()
+      }
     }
-  }
 </script>
 
 <style lang="stylus" scoped>
