@@ -50,7 +50,7 @@
         slideOptions: {
             listenScroll: true,
             probeType: 3,
-            // 一定要设置他的域值设为0 防止他有要横向滚动和竖向滚动出现斜线滚动
+            // 一 定要设置他的域值设为0 防止他有要横向滚动和竖向滚动出现斜线滚动
             directionLockThreshold: 0
         }
       }
