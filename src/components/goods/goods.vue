@@ -1,3 +1,4 @@
+// 商品组件
 <template>
   <div class="goods">
     <div class="scroll-nav-wrapper">
@@ -7,6 +8,28 @@
         :options="scrollOptions"
         v-if="goods.length"
       >
+      <template slot="bar" slot-scope="props">
+          <cube-scroll-nav-bar
+            direction="vertical"
+            :labels="props.labels"
+            :txts="barTxts"
+            :current="props.current"
+          >
+            <template slot-scope="props">
+              <div class="text">
+                <support-ico
+                  v-if="props.txt.type>=1"
+                  :size=3
+                  :type="props.txt.type"
+                ></support-ico>
+                <span>{{props.txt.name}}</span>
+                <span class="num" v-if="props.txt.count">
+                  <bubble :num="props.txt.count"></bubble>
+                </span>
+              </div>
+            </template>
+          </cube-scroll-nav-bar>
+        </template>
         <cube-scroll-nav-panel
           v-for="good in goods"
           :key="good.name"
@@ -44,8 +67,11 @@
     </div>
     <div class="shop-cart-wrapper">
       <shop-cart
-        ref="shopCart"
-        >
+         ref="shopCart"
+        :select-foods="selectFoods"
+        :delivery-price="seller.deliveryPrice"
+        :min-price="seller.minPrice"
+      >
         </shop-cart>
     </div>
   </div>
@@ -55,6 +81,8 @@
   import { getGoods } from 'api'
   import CartControl from 'components/cart-control/cart-control'
   import ShopCart from 'components/shop-cart/shop-cart'
+  import SupportIco from 'components/support-ico/support-ico'
+  import Bubble from 'components/bubble/bubble'
 
   export default {
    name: 'goods',
@@ -81,12 +109,29 @@
         return this.data.seller
       },
      selectFoods() {
-        const ret = []
+        const foods = []
         this.goods.forEach((good) => {
           good.foods.forEach((food) => {
             if (food.count) {
-              ret.push(food)
+             foods.push(food)
             }
+          })
+        })
+        return foods
+      },
+      barTxts() {
+        // eslint-disable-next-line prefer-const
+        let ret = []
+        this.goods.forEach((good) => {
+          const { type, name, foods } = good
+          let count = 0
+          foods.forEach((food) => {
+            count += food.count || 0
+          })
+          ret.push({
+            type,
+            name,
+            count
           })
         })
         return ret
@@ -97,30 +142,23 @@
         getGoods().then((goods) => {
           this.goods = goods
         })
+      },
+      selectFood(food) {
+        this.selectedFood = food
+        this._showFood()
+        this._showShopCartSticky()
+      },
+       onAdd(el) {
+        this.$refs.shopCart.drop(el)
       }
     },
     components: {
       CartControl,
-      ShopCart
-    },
-      onAdd(target) {
-        this.$refs.shopCart.drop(target)
-      },
-      _showShopCartSticky() {
-        this.shopCartStickyComp = this.shopCartStickyComp || this.$createShopCartSticky({
-          $props: {
-            selectFoods: 'selectFoods',
-            deliveryPrice: this.seller.deliveryPrice,
-            minPrice: this.seller.minPrice,
-            fold: true
-          }
-        })
-        this.shopCartStickyComp.show()
-      },
-      _hideShopCartSticky() {
-        this.shopCartStickyComp.hide()
-      }
+      ShopCart,
+      SupportIco,
+      Bubble
     }
+  }
 </script>
 
 <style lang="stylus" scoped>

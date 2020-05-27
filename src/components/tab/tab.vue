@@ -1,3 +1,4 @@
+// 商品栏目组件
 <template>
   <div class="tab">
     <cube-tab-bar
@@ -10,20 +11,20 @@
     >
     </cube-tab-bar>
     <div class="slide-wrapper">
-    <cube-slide
-      :loop=false
-      :auto-play=false
-      :show-dots=false
-      :initial-index="index"
-      ref="slide"
-      :options="slideOptions"
-      @scroll="onScroll"
-      @change="onChange"
-    >
-      <cube-slide-item v-for="(tab, index) in tabs" :key="index">
-        <component :is="tab.component" :data="tab.data" ref="component"></component>
-      </cube-slide-item>
-    </cube-slide>
+      <cube-slide
+        :loop=false
+        :auto-play=false
+        :show-dots=false
+        :initial-index="index"
+        ref="slide"
+        :options="slideOptions"
+        @scroll="onScroll"
+        @change="onChange"
+      >
+        <cube-slide-item v-for="(tab,index) in tabs" :key="index">
+          <component ref="component" :is="tab.component" :data="tab.data"></component>
+        </cube-slide-item>
+      </cube-slide>
     </div>
   </div>
 </template>
@@ -38,7 +39,6 @@
           return []
         }
       },
-      // 默认可以选择一个下标 不写死为默认下标0
       initialIndex: {
         type: Number,
         default: 0
@@ -48,10 +48,9 @@
       return {
         index: this.initialIndex,
         slideOptions: {
-            listenScroll: true,
-            probeType: 3,
-            // 一 定要设置他的域值设为0 防止他有要横向滚动和竖向滚动出现斜线滚动
-            directionLockThreshold: 0
+          listenScroll: true,
+          probeType: 3,
+          directionLockThreshold: 0
         }
       }
     },
@@ -80,15 +79,16 @@
       onChange(current) {
         this.index = current
         const instance = this.$refs.component[current]
-        instance.fetch && instance.fetch()
+        if (instance && instance.fetch) {
+          instance.fetch()
         }
       }
     }
+  }
 </script>
 
 <style lang="stylus" scoped>
   @import "~common/stylus/variable"
-
   .tab
     display: flex
     flex-direction: column
