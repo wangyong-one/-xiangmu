@@ -1,6 +1,6 @@
 // 购物车组件
 <template>
-  <transition name="fade" appear>
+  <transition name="fade" >
     <cube-popup
       :mask-closable=true
       v-show="visible"
@@ -11,27 +11,26 @@
     >
       <transition
         name="move"
-        appear
-        @after-leave="afterLeave"
+        @after-leave="onLeave"
       >
         <div v-if="visible">
           <div class="list-header">
             <h1 class="title">购物车</h1>
-            <span class="empty" @click="empty">清空</span>
+            <span class="empty">清空</span>
           </div>
           <cube-scroll class="list-content" ref="listContent">
             <ul>
               <li
                 class="food"
-                v-for="(food,index) in selectFoods"
-                :key="index"
+                v-for="food in selectFoods"
+                :key="food.name"
               >
                 <span class="name">{{food.name}}</span>
                 <div class="price">
                   <span>￥{{food.price*food.count}}</span>
                 </div>
                 <div class="cart-control-wrapper">
-                  <cart-control @add="onAdd" :food="food"></cart-control>
+                  <cart-control @add="onAdd"  :food="food"></cart-control>
                 </div>
               </li>
             </ul>
@@ -44,15 +43,12 @@
 
 <script>
   import CartControl from 'components/cart-control/cart-control'
-  import popupMixin from 'common/mixins/popup'
-
-  const EVENT_SHOW = 'show'
-  const EVENT_ADD = 'add'
+  const EVENT_HIDE = 'hide'
   const EVENT_LEAVE = 'leave'
+  const EVENT_ADD = 'add'
 
   export default {
     name: 'shop-cart-list',
-    mixins: [popupMixin],
     props: {
       selectFoods: {
         type: Array,
@@ -61,37 +57,27 @@
         }
       }
     },
-    created() {
-      this.$on(EVENT_SHOW, () => {
-        this.$nextTick(() => {
-          this.$refs.listContent.refresh()
-        })
-      })
+    data() {
+      return {
+        visible: false
+      }
     },
     methods: {
-      onAdd(target) {
-        this.$emit(EVENT_ADD, target)
+      show() {
+        this.visible = true
       },
-      afterLeave() {
+      hide() {
+        this.visible = false
+        this.$emit(EVENT_HIDE)
+      },
+      onLeave() {
         this.$emit(EVENT_LEAVE)
       },
       maskClick() {
         this.hide()
       },
-      empty() {
-        this.dialogComp = this.$createDialog({
-          type: 'confirm',
-          content: '清空购物车？',
-          $events: {
-            confirm: () => {
-              this.selectFoods.forEach((food) => {
-                food.count = 0
-              })
-              this.hide()
-            }
-          }
-        })
-        this.dialogComp.show()
+      onAdd(target) {
+        this.$emit(EVENT_ADD, target)
       }
     },
     components: {

@@ -85,6 +85,7 @@
     },
     created() {
       this.dropBalls = []
+      this.listFold = true
     },
     computed: {
       totalPrice() {
@@ -120,6 +121,7 @@
       }
     },
     methods: {
+      // 购物车的显示商品的组件 当点击就展示对象的商品
       toggleList() {
         if (this.listFold) {
           if (!this.totalCount) {
