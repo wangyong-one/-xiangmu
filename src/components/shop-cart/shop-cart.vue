@@ -1,4 +1,4 @@
-// 购物车蒙层
+// 购物车组件
 <template>
   <div>
     <div class="shopcart">
@@ -15,7 +15,7 @@
           <div class="price" :class="{'highlight':totalPrice>0}">￥{{totalPrice}}</div>
           <div class="desc">另需配送费￥{{deliveryPrice}}元</div>
         </div>
-        <div class="content-right" @click="pay">
+        <div class="content-right" @click.stop ="pay">
           <div class="pay" :class="payClass">
             {{payDesc}}
           </div>
@@ -223,8 +223,10 @@
       fold(newVal) {
         this.listFold = newVal
       },
-      totalCount(count) {
-        if (!this.fold && count === 0) {
+      totalCount(newVal) {
+        // 购物车正常情况是收起的
+        // 判断展开情况和清空情况下 我们执行关闭hideShopCartList()
+        if (!this.listFold && newVal === 0) {
           this._hideShopCartList()
         }
       }

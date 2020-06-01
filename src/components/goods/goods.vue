@@ -139,10 +139,14 @@
     },
     methods: {
       fetch() {
+        // 使用fetched方法当数据获取的时候就不会反复的去获取
+        if (!this.fetched) {
+          this.fetched = true
         getGoods().then((goods) => {
           this.goods = goods
         })
-      },
+      }
+    },
       selectFood(food) {
         this.selectedFood = food
         this._showFood()

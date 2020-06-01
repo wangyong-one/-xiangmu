@@ -1,4 +1,4 @@
-// 购物车组件
+// 购物车里面的商品功能组件
 <template>
   <transition name="fade" >
     <cube-popup
@@ -16,7 +16,7 @@
         <div v-if="visible">
           <div class="list-header">
             <h1 class="title">购物车</h1>
-            <span class="empty">清空</span>
+            <span class="empty" @click="empty">清空</span>
           </div>
           <cube-scroll class="list-content" ref="listContent">
             <ul>
@@ -43,11 +43,14 @@
 
 <script>
   import CartControl from 'components/cart-control/cart-control'
-  const EVENT_HIDE = 'hide'
+  import popupMixin from 'common/mixins/popup.js'
+
   const EVENT_LEAVE = 'leave'
   const EVENT_ADD = 'add'
+  const EVENT_SHOW = 'show'
 
   export default {
+    mixins: [popupMixin],
     name: 'shop-cart-list',
     props: {
       selectFoods: {
@@ -57,19 +60,14 @@
         }
       }
     },
-    data() {
-      return {
-        visible: false
-      }
+    created() {
+      this.$on(EVENT_SHOW, () => {
+        this.$nextTick(() => {
+          this.$refs.listContent.refresh()
+        })
+      })
     },
     methods: {
-      show() {
-        this.visible = true
-      },
-      hide() {
-        this.visible = false
-        this.$emit(EVENT_HIDE)
-      },
       onLeave() {
         this.$emit(EVENT_LEAVE)
       },
@@ -78,6 +76,20 @@
       },
       onAdd(target) {
         this.$emit(EVENT_ADD, target)
+      },
+      empty() {
+        this.$createDialog({
+          type: 'confirm',
+          content: '清空购物车？',
+          $events: {
+            confirm: () => {
+              this.selectFoods.forEach((food) => {
+                food.count = 0
+              })
+              this.hide()
+            }
+          }
+        }).show()
       }
     },
     components: {

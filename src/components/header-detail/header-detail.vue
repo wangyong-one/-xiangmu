@@ -1,3 +1,4 @@
+// 顶部盲层上
 <template>
   <transition name="fade">
     <div v-show="visible" class="header-detail">
@@ -38,8 +39,11 @@
 <script>
   import Star from 'components/star/star'
   import SupportIco from 'components/support-ico/support-ico'
+  // 导入common 里面的popup 把自身的数据方法抽象出来进行使用
+  import popupMixin from 'common/mixins/popup.js'
 
   export default {
+    mixins: [popupMixin],
     name: 'header-detail',
     props: {
       seller: {
@@ -47,19 +51,6 @@
         default() {
           return {}
         }
-      }
-    },
-    data() {
-      return {
-        visible: false
-      }
-    },
-    methods: {
-      show() {
-      this.visible = true
-      },
-      hide() {
-        this.visible = false
       }
     },
     components: {
