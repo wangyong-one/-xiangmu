@@ -154,6 +154,36 @@
       },
        onAdd(el) {
         this.$refs.shopCart.drop(el)
+      },
+      _showFood() {
+        this.foodComp = this.foodComp || this.$createFood({
+          $props: {
+            food: 'selectedFood'
+          },
+          $events: {
+            add: (target) => {
+              this.shopCartStickyComp.drop(target)
+            },
+            leave: () => {
+              this._hideShopCartSticky()
+            }
+          }
+        })
+        this.foodComp.show()
+      },
+      _showShopCartSticky() {
+        this.shopCartStickyComp = this.shopCartStickyComp || this.$createShopCartSticky({
+          $props: {
+            selectFoods: 'selectFoods',
+            deliveryPrice: this.seller.deliveryPrice,
+            minPrice: this.seller.minPrice,
+            fold: true
+          }
+        })
+        this.shopCartStickyComp.show()
+      },
+      _hideShopCartSticky() {
+        this.shopCartStickyComp.hide()
       }
     },
     components: {
