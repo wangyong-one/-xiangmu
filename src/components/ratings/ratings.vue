@@ -1,5 +1,6 @@
+// 评价组件
 <template>
-  <cube-scroll  class="ratings" :options="scrollOptions">
+  <cube-scroll  class="ratings" :data="computedRatings" :options="scrollOptions">
     <div class="ratings-content">
       <div class="overview">
         <div class="overview-left">
@@ -25,14 +26,14 @@
         </div>
       </div>
       <split></split>
-      <!-- <rating-select
+      <rating-select
         @select="onSelect"
         @toggle="onToggle"
         :selectType="selectType"
         :onlyContent="onlyContent"
         :ratings="ratings"
       >
-      </rating-select> -->
+      </rating-select>
       <div class="rating-wrapper">
         <ul>
           <li
@@ -61,6 +62,7 @@
                 </span>
               </div>
               <div class="time">
+                <!-- 进行格式化时间戳 -->
                 {{format(rating.rateTime)}}
               </div>
             </div>
@@ -73,15 +75,16 @@
 
 <script>
   import Star from 'components/star/star'
-  // import RatingSelect from 'components/rating-select/rating-select'
+  import RatingSelect from 'components/rating-select/rating-select'
   import Split from 'components/split/split'
-  // import ratingMixin from 'common/mixins/rating'
-  // import { getRatings } from 'api'
+  import ratingMixin from 'common/mixins/rating'
+  import { getRatings } from 'api'
+  // 本来给你的数据是时间戳 自己引入moment 进行格式化时间
   import moment from 'moment'
 
   export default {
     name: 'ratings',
-    // mixins: [ratingMixin],
+    mixins: [ratingMixin],
     props: {
       data: {
         type: Object
@@ -102,24 +105,25 @@
       }
     },
     methods: {
-      // fetch () {
-      //   if (!this.fetched) {
-      //     this.fetched = true
-      //     getRatings({
-      //       id: this.seller.id
-      //     }).then((ratings) => {
-      //       this.ratings = ratings
-      //     })
-      //   }
-      // },
+      // fetch() 方法获取我们getRatings 数据
+      fetch () {
+        // 判断只需要获取一次数据就行了
+        if (!this.fetched) {
+          this.fetched = true
+          getRatings().then((ratings) => {
+            this.ratings = ratings
+          })
+        }
+      },
+      // 格式化时间
       format (time) {
         return moment(time).format('YYYY-MM-DD hh:mm')
       }
     },
     components: {
       Star,
-      Split
-      // RatingSelect
+      Split,
+      RatingSelect
     },
     watch: {
       selectType () {

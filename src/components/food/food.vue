@@ -6,7 +6,7 @@
   >
   <!-- 通过v-show="visible"是封装在mixins里面 使用mixins这个属性调用 这个控制详情的显示 -->
     <div class="food" v-show="visible">
-      <cube-scroll ref="scroll">
+      <cube-scroll ref="scroll" :data="computeRatings">
         <div class="food-content">
           <div class="image-header">
             <img :src="food.image">
@@ -26,7 +26,7 @@
             </div>
             <div class="cart-control-wrapper">
               <cart-control @add="addFood" :food="food"></cart-control>
-            </div> -->
+            </div>
             <transition name="fade">
               <div @click="addFirst" class="buy" v-show="!food.count">
                 加入购物车
@@ -51,9 +51,10 @@
               :ratings="ratings">
             </rating-select>
             <div class="rating-wrapper">
-              <ul v-show="computedRatings && computedRatings.length">
+              <ul v-show=" computeRatings &&  computeRatings.length">
+                <!-- 在下面在遍历computeRatings 里面的数据 -->
                 <li
-                  v-for="(rating,index) in computedRatings"
+                  v-for="(rating,index) in computeRatings"
                   class="rating-item border-bottom-1px"
                   :key="index"
                 >
@@ -67,8 +68,8 @@
                     <span :class="{'icon-thumb_up':rating.rateType===0,'icon-thumb_down':rating.rateType===1}"></span>{{rating.text}}
                   </p>
                 </li>
-              </ul>format
-              <div class="no-rating" v-show="!computedRatings || !computedRatings.length">暂无评价</div>
+              </ul>
+              <div class="no-rating" v-show="! computeRatings || ! computeRatings.length">暂无评价</div>
             </div>
           </div>
         </div>
@@ -79,7 +80,7 @@
 
 <script type="text/ecmascript-6">
   import moment from 'moment'
-   import CartControl from 'components/cart-control/cart-control'
+  import CartControl from 'components/cart-control/cart-control'
   import RatingSelect from 'components/rating-select/rating-select'
   import Split from 'components/split/split'
   // import ratingMixin from 'common/mixins/rating'
@@ -91,6 +92,8 @@
   const EVENT_ADD = 'add'
   const EVENT_LEAVE = 'leave'
 
+  const All = 2
+
   export default {
     name: 'food',
     mixins: [popupMixin],
@@ -101,6 +104,9 @@
     },
     data() {
       return {
+        // 进行接收rating-select组件的数据 进来就给onlyConten设置 true展示数据
+        onlyContent: true,
+        selectType: All,
         desc: {
           all: '全部',
           positive: '推荐',
@@ -109,16 +115,36 @@
       }
     },
     computed: {
+      // 评价数据
       ratings() {
         return this.food.ratings
+      },
+      // eslint-disable-next-line vue/return-in-computed-property
+      computeRatings() {
+        const ret = []
+        // 循环我们的评级
+        this.ratings.forEach((rating) => {
+          if (this.onlyContent && !rating.text) {
+            return
+          }
+          // 这里的selectype 控制评级的数据展示
+          if (this.selectType === All || this.selectType === rating.rateType) {
+            ret.push(rating)
+          }
+        })
+        return ret
       }
     },
     created() {
+      // eslint-disable-next-line no-unused-expressions
       this.$on(EVENT_SHOW, () => {
         this.$nextTick(() => {
           this.$refs.scroll.refresh()
         })
       })
+    },
+    mounted() {
+      console.log(this.ratings)
     },
     methods: {
       afterLeave() {
@@ -133,6 +159,12 @@
       },
       format(time) {
         return moment(time).format('YYYY-MM-DD hh:mm')
+      },
+      onSelect(type) {
+        this.selectType = type
+      },
+      onToggle() {
+        this.onlyContent = !this.onlyContent
       }
      },
     components: {

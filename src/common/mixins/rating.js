@@ -1,3 +1,4 @@
+// 公共的商品评价展示组件进行抽象出来
 const ALL = 2
 
 export default {
@@ -9,7 +10,7 @@ export default {
   },
   computed: {
     computedRatings() {
-      let ret = []
+      var ret = []
       this.ratings.forEach((rating) => {
         if (this.onlyContent && !rating.text) {
           return

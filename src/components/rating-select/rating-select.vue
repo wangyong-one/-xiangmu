@@ -1,3 +1,4 @@
+// 评价组件的商品评级的内容 food的子组件
 <template>
   <div class="rating-select">
     <div class="rating-type border-bottom-1px">
@@ -35,6 +36,7 @@
         type: Number,
         default: ALL
       },
+      // 判断是否有内容然后进行点击展示对应的数据
       onlyContent: {
         type: Boolean,
         default: false
@@ -63,9 +65,12 @@
       }
     },
     methods: {
+      // $emit在这里是派发一个事件在父组件
       select(type) {
         this.$emit(EVENT_SELECT, type)
       },
+      // 在这里不能给父组件的onlyContent 直接进行复制
+      // 所以要通过$emit 进行给父组件传提方法
       toggleContent() {
         this.$emit(EVENT_TOGGLE)
       }
