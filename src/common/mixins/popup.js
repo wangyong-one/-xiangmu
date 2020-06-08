@@ -1,3 +1,4 @@
+// 这是混入组件从一些相同的功能或者代码中抽象出来
 const EVENT_SHOW = 'show'
 const EVENT_HIDE = 'hide'
 

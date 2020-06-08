@@ -1,5 +1,6 @@
 // 评价组件
 <template>
+<!-- 加:data="computedRatings 以为这个数据一直在变化 所以把数据传给cube-scroll 以防一些其他滚动时出现问题 也同时在 food 组件一起加入 -->
   <cube-scroll  class="ratings" :data="computedRatings" :options="scrollOptions">
     <div class="ratings-content">
       <div class="overview">
@@ -110,7 +111,9 @@
         // 判断只需要获取一次数据就行了
         if (!this.fetched) {
           this.fetched = true
-          getRatings().then((ratings) => {
+          getRatings({
+            id: this.seller.id
+          }).then((ratings) => {
             this.ratings = ratings
           })
         }

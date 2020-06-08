@@ -51,10 +51,10 @@
               :ratings="ratings">
             </rating-select>
             <div class="rating-wrapper">
-              <ul v-show=" computeRatings &&  computeRatings.length">
+              <ul v-show=" computedRatings &&  computedRatings.length">
                 <!-- 在下面在遍历computeRatings 里面的数据 -->
                 <li
-                  v-for="(rating,index) in computeRatings"
+                  v-for="(rating,index) in computedRatings"
                   class="rating-item border-bottom-1px"
                   :key="index"
                 >
@@ -69,7 +69,7 @@
                   </p>
                 </li>
               </ul>
-              <div class="no-rating" v-show="! computeRatings || ! computeRatings.length">暂无评价</div>
+              <div class="no-rating" v-show="! computedRatings || ! computedRatings.length">暂无评价</div>
             </div>
           </div>
         </div>
@@ -83,7 +83,7 @@
   import CartControl from 'components/cart-control/cart-control'
   import RatingSelect from 'components/rating-select/rating-select'
   import Split from 'components/split/split'
-  // import ratingMixin from 'common/mixins/rating'
+  import ratingMixin from 'common/mixins/rating'
   // Mixin一种分发 Vue 组件中可复用功能的非常灵活的方式 可以把这一些组件相同的部位抽象出来
   // 用Mixin 进行接收 可以达到重复使用 这个是混入组件的作用
   import popupMixin from 'common/mixins/popup'
@@ -92,11 +92,9 @@
   const EVENT_ADD = 'add'
   const EVENT_LEAVE = 'leave'
 
-  const All = 2
-
   export default {
     name: 'food',
-    mixins: [popupMixin],
+    mixins: [popupMixin, ratingMixin],
     props: {
       food: {
         type: Object
@@ -104,9 +102,6 @@
     },
     data() {
       return {
-        // 进行接收rating-select组件的数据 进来就给onlyConten设置 true展示数据
-        onlyContent: true,
-        selectType: All,
         desc: {
           all: '全部',
           positive: '推荐',
@@ -118,21 +113,6 @@
       // 评价数据
       ratings() {
         return this.food.ratings
-      },
-      // eslint-disable-next-line vue/return-in-computed-property
-      computeRatings() {
-        const ret = []
-        // 循环我们的评级
-        this.ratings.forEach((rating) => {
-          if (this.onlyContent && !rating.text) {
-            return
-          }
-          // 这里的selectype 控制评级的数据展示
-          if (this.selectType === All || this.selectType === rating.rateType) {
-            ret.push(rating)
-          }
-        })
-        return ret
       }
     },
     created() {
@@ -159,12 +139,6 @@
       },
       format(time) {
         return moment(time).format('YYYY-MM-DD hh:mm')
-      },
-      onSelect(type) {
-        this.selectType = type
-      },
-      onToggle() {
-        this.onlyContent = !this.onlyContent
       }
      },
     components: {

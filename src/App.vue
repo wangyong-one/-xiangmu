@@ -55,6 +55,16 @@ export default {
       this.seller = seller
     })
   },
+    methods: {
+      // 把从seller组件获取到的ID 通过在这个方法请求数据的时候吧ID也传送到服务端
+      _getSeller() {
+        getSeller({
+          id: this.seller.id
+        }).then((seller) => {
+          this.seller = Object.assign({}, this.seller, seller)
+        })
+      }
+    },
   components: {
      VHeader,
      Tab

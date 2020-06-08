@@ -28,9 +28,12 @@ module.exports = {
   devServer: {
     before(app) {
       app.get('/api/seller', function (req, res) {
+        // 获取到请求ID
+        const id = req.query.id
         res.json({
           errno: 0,
-          data: seller
+          // 进行拼接这个ID
+          data: Object.assign({}, seller, { id })
         })
       })
       app.get('/api/goods', function (req, res) {
