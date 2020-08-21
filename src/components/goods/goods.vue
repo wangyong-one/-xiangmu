@@ -85,7 +85,8 @@
   import Bubble from 'components/bubble/bubble'
 
   export default {
-   name: 'goods',
+  // 指组件自身组件调用自身组件
+    name: 'goods',
     props: {
       data: {
         type: Object,
