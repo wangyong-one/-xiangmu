@@ -37,7 +37,7 @@
   },
   "transformModules": {
     "cube-ui": {
-      "transform": "cube-ui/sredsc/modules/${member}",
+      "transform": "cube-ui/src/modules/${member}",
       "kebabCase": true
     }
   }
